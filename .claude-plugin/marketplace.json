@@ -8,7 +8,7 @@
     {
       "name": "agentic",
       "source": "./",
-      "description": "Stack-agnostic engineering skills for Claude Code: ticket briefs, PR and local reviews, test-first ticket work, and evidence-based release notes."
+      "description": "Stack-agnostic engineering skills for Claude Code: ticket briefs, PR and local reviews, a review-request watcher, test-first ticket work, and evidence-based release notes."
     }
   ]
 }

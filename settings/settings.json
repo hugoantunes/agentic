@@ -1,0 +1,106 @@
+{
+  "env": {
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "5"
+  },
+  "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-haiku-5-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "autoCompactWindow": 200000,
+  "tui": "fullscreen",
+  "theme": "dark-ansi",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git blame *)",
+      "Bash(git grep *)",
+      "Bash(git fetch *)",
+      "Bash(git merge-base *)",
+      "Bash(git ls-files *)",
+      "Bash(git ls-tree *)",
+      "Bash(git rev-parse *)",
+      "Bash(git check-ignore *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh run view *)",
+      "Bash(gh run list *)",
+      "Bash(gh repo view *)",
+      "Bash(gh release view *)",
+      "Bash(gh release list *)",
+      "Bash(gh search *)",
+      "Bash(gh auth status *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(npm view *)",
+      "Bash(uv tree *)",
+      "Bash(tar tf *)",
+      "WebSearch",
+      "Skill(claude-api:*)",
+      "mcp__claude_ai_Atlassian__atlassianUserInfo",
+      "mcp__claude_ai_Atlassian__getAccessibleAtlassianResources",
+      "mcp__claude_ai_Atlassian__getJiraIssue",
+      "mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql",
+      "mcp__claude_ai_Atlassian__getTransitionsForJiraIssue",
+      "mcp__claude_ai_Datadog__load_datadog_skill",
+      "mcp__claude_ai_Datadog__list_datadog_skills",
+      "mcp__claude_ai_Datadog__search_datadog_sdk",
+      "mcp__claude_ai_Datadog__execute_code",
+      "mcp__claude_ai_Datadog__search_datadog_logs",
+      "mcp__claude_ai_Datadog__analyze_datadog_logs",
+      "mcp__claude_ai_Datadog__aggregate_spans",
+      "mcp__claude_ai_Datadog__search_datadog_spans",
+      "mcp__claude_ai_Datadog__get_datadog_trace",
+      "mcp__claude_ai_Datadog__search_datadog_metrics",
+      "mcp__claude_ai_Datadog__get_datadog_metric",
+      "mcp__claude_ai_Datadog__search_datadog_monitors",
+      "mcp__claude_ai_Datadog__search_datadog_k8s_resources",
+      "mcp__claude_ai_Datadog__search_datadog_error_tracking_issues",
+      "mcp__claude_ai_Datadog__get_datadog_error_tracking_issue",
+      "mcp__claude_ai_Datadog__analyze_datadog_error_tracking_errors",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-get-comments",
+      "mcp__claude_ai_Slack__slack_read_channel",
+      "mcp__claude_ai_Slack__slack_read_thread",
+      "mcp__claude_ai_Slack__slack_read_file",
+      "mcp__claude_ai_Slack__slack_search_public_and_private",
+      "mcp__claude_ai_Claude_Docs__guide",
+      "mcp__claude_ai_Claude_Docs__read"
+    ]
+  },
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Read-only investigation in any shape: search, find, grep, read, list, git fetch/log/show/diff/grep/blame/status/merge-base, kubectl get/logs/describe, read-only database queries, HTTP GETs. Pipes, chains, cd and $(...) substitutions are fine as long as nothing is written or mutated.",
+      "git fetch and git pull in any local repository, including via git -C <dir>.",
+      "Creating files in Claude's own scratchpad directory and running scripts from there with a project's .venv python, for probing or debugging."
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Editing, creating or deleting repository files that are not part of the task or plan the user approved in this session.",
+      "Modifying system or user configuration outside the repository and scratchpad: /etc, shell profiles, ~/.config, ~/.ssh, ~/.claude.",
+      "Mutating remote or shared state: git push, kubectl apply/delete/exec/scale/patch, database writes or migrations, cloud CLI writes."
+    ]
+  }
+}
