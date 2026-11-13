@@ -1,0 +1,14 @@
+{
+  "name": "agentic",
+  "description": "Stack-agnostic engineering skills for Claude Code.",
+  "owner": {
+    "name": "Hugo Antunes"
+  },
+  "plugins": [
+    {
+      "name": "agentic",
+      "source": "./",
+      "description": "Stack-agnostic engineering skills for Claude Code: ticket briefs, PR and local reviews, test-first ticket work, and evidence-based release notes."
+    }
+  ]
+}
