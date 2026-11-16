@@ -4,7 +4,8 @@ Every 10 minutes until midnight, collect the open GitHub PRs requesting your rev
 --slack-channel, the PRs linked in that Slack channel, skipping the ones already handled. Each
 new one gets `pr-review <effort> <url> --approve` in a headless session (`claude -p`), one at a
 time, so the session that started this script never wakes for it and its context stays small.
-The effort grows with the PR's changed lines (see EFFORT_BY_SIZE), so small PRs skip the
+The effort grows with the PR's added lines, tests weighted down and generated files ignored
+(see EFFORT_BY_SIZE and review_size), so small PRs skip the
 large-PR review recipe; it sets both the model's effort and the review's depth.
 
 notify.py reports each review as it starts and its verdict when it ends: always in this
@@ -54,6 +55,10 @@ REVIEW_TIMEOUT_SECONDS = 3600
 REVIEW_BUDGET_USD = 15.0
 EFFORT_BY_SIZE = ((200, "medium"), (600, "high"))
 LARGE_PR_EFFORT = "xhigh"
+TEST_LINE_WEIGHT = 0.25
+TEST_PATH = re.compile(r"(^|/)(tests?|__tests__)/|(^|/)test_[^/]*\.py$|_test\.py$|\.(test|spec)\.[^/]+$")
+GENERATED_PATH = re.compile(r"(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|poetry\.lock|uv\.lock)$|\.snap$|_baseline\.json$")
+GH_FILE_LIMIT = 100
 REVIEWING_EMOJI = "eyes"
 REACTION_ALREADY_SET = frozenset({"already_reacted", "no_reaction"})
 PR_URL = re.compile(r"https://github\.com/[\w.-]+/[\w.-]+/pull/\d+")
@@ -198,21 +203,37 @@ def poll(state: dict, me: str) -> tuple:
     return from_slack | dict.fromkeys(from_github), {"channel": channel, "last_ts": last_ts, "gh_seen": ready}
 
 
-def effort_for_size(lines: int) -> str:
-    """Pick the review effort from a PR's changed lines; review cost barely follows size, so small PRs would otherwise pay the large-PR price."""
+def effort_for_size(lines: float) -> str:
+    """Pick the review effort from a PR's review size; review cost barely follows size, so small PRs would otherwise pay the large-PR price."""
     for limit, effort in EFFORT_BY_SIZE:
         if lines < limit:
             return effort
     return LARGE_PR_EFFORT
 
 
+def line_weight(path: str) -> float:
+    """How much a file's added lines count toward review size: generated files not at all, tests a quarter, everything else in full."""
+    if GENERATED_PATH.search(path):
+        return 0.0
+    if TEST_PATH.search(path):
+        return TEST_LINE_WEIGHT
+    return 1.0
+
+
+def review_size(files: list) -> float:
+    """Weighted added lines; deletions are left out because removed or rewritten-away code needs far less review than new code."""
+    return sum(file["additions"] * line_weight(file["path"]) for file in files)
+
+
 def review_effort(url: str) -> str:
-    """Size-based effort for a PR; when its size cannot be read, review at the large-PR effort rather than skimp."""
+    """Size-based effort for a PR; when its size cannot be read, or gh's file list may be truncated, review at the large-PR effort rather than skimp."""
     try:
-        pr = gh_json("pr", "view", url, "--json", "additions,deletions")
+        files = gh_json("pr", "view", url, "--json", "files")["files"]
     except subprocess.CalledProcessError:
         return LARGE_PR_EFFORT
-    return effort_for_size(pr["additions"] + pr["deletions"])
+    if len(files) >= GH_FILE_LIMIT:
+        return LARGE_PR_EFFORT
+    return effort_for_size(review_size(files))
 
 
 def review_command(review_skill: str, url: str, effort: str) -> str:

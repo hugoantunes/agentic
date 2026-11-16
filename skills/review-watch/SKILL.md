@@ -18,8 +18,8 @@ exits: at midnight, on a stop signal, or on failure. The script dies with the se
    in the foreground, print its output (the reviews it would run, or why it failed), and stop.
 2. Otherwise run the same command with Bash `run_in_background: true`.
 3. Print one line: the background task id, and that it polls every 10 minutes until midnight,
-   reviews each new PR in a headless session at an effort set by its size (under 200 changed
-   lines `medium`, under 600 `high`, else `xhigh`), reports when each starts and its verdict,
+   reviews each new PR in a headless session at an effort set by its size (under 200 added
+   lines `medium`, under 600 `high`, else `xhigh`; tests count a quarter, lockfiles and baselines not at all), reports when each starts and its verdict,
    and stops with the session.
 
 ## When the poller exits
